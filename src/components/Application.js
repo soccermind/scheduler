@@ -58,7 +58,8 @@ export default function Application(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
-    appointments: {}
+    appointments: {},
+    interviewers: {}
   });
   const setDay = day => setState({ ...state, day });
   // const setDays = days => setState( prev => ({ ...prev, days }));
@@ -66,10 +67,11 @@ export default function Application(props) {
   useEffect(() => {
     Promise.all([
       axios.get("http://localhost:8001/api/days"),
-      axios.get("http://localhost:8001/api/appointments")
+      axios.get("http://localhost:8001/api/appointments"),
+      axios.get("http://localhost:8001/api/interviewers")
     ]).then((all) => {
         // console.log(all);
-        setState(prev => ({...prev, days: all[0].data, appointments: all[1].data }));
+        setState(prev => ({...prev, days: all[0].data, appointments: all[1].data, interviewers: all[2].data }));
       });
     // axios.get("/api/days").then(response => {
       // console.log(response.data);
@@ -77,14 +79,22 @@ export default function Application(props) {
     }, []); 
   // }, []);
 
-  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  const appointments = getAppointmentsForDay(state, state.day);
   // const appointmentsArr = [];
   // for (const obj in state.appointment) {
   //   appointmentsArr.push(obj);
   // }
-  const appointmentList = dailyAppointments.map( appointment => 
-    <Appointment key={appointment.id} {...appointment}/>
+  const schedule = appointments.map((appointment) => {
+    const interview = getInterview(state, appointment.interview);
+    return (
+      <Appointment 
+        key={appointment.id} 
+        id={appointment.id}
+        time={appointment.time}
+        interview={interview}
+      />
     );
+  });
     
   return (
     <main className="layout">
@@ -109,7 +119,7 @@ export default function Application(props) {
       />
       </section>
       <section className="schedule">
-        {appointmentList}
+        {schedule}
         <Appointment key="last" time="5pm" />
       </section>
     </main>
