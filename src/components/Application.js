@@ -4,12 +4,12 @@ import axios from "axios";
 import DayList from "./DayList.js";
 import Appointment from "components/Appointment";
 import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "../helpers/selectors";
+import useVisualMode from "../hooks/useVisualMode"
 
 import "components/Application.scss";
 
 export default function Application(props) {
   function bookInterview(id, interview) {
-    console.log(id, interview);
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -18,7 +18,37 @@ export default function Application(props) {
       ...state.appointments,
       [id]: appointment
     };
-    setState({...state, appointments })
+    console.log("id, interview", id, interview);
+    setState({...state, appointments }); // probably need to move this until after completing the put request, which means the transition(SHOW) after this function call in index.js needs to wait for a promise to complete --> need mentor help on this - Saturday.
+      axios.put(`/api/appointments/${id}`, {interview: interview })
+      .then(function (response) {
+        console.log(response);
+        
+      })
+      .catch(function (error) {
+        console.log(error);
+        // return false;
+      });
+  }
+
+  function cancelInterview(id) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+    axios.delete(`/api/appointments/${id}`, { interview: null })
+    .then(function (response) {
+      console.log(response);
+      setState({...state, appointments }); // probably need to move this
+    })
+    .catch(function (error) {
+      console.log(error);
+      // return false;
+    });
   }
 
   const [state, setState] = useState({
@@ -57,6 +87,7 @@ export default function Application(props) {
         interview={interview}
         interviewers={interviewers}
         bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
       />
     );
   });
