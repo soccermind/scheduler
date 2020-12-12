@@ -4,6 +4,8 @@ import Header from "./Header";
 import Show from "./Show";
 import Empty from "./Empty";
 import Form from "./Form";
+import Status from "./Status";
+
 import useVisualMode from "../../hooks/useVisualMode"
 
 import "./styles.scss";
@@ -18,25 +20,26 @@ const CONFIRM = "CONFIRM";
 const EDIT = "EDIT";
 
 export default function Appointment(props) {
+  const { mode, transition, back } = useVisualMode(
+    props.interview ? SHOW : EMPTY
+  );
+
   function save(name, interviewer) {
     const interview = {
       student: name,
       interviewer
     };
     transition(SAVING);
-    props.bookInterview(props.id, interview);
-    transition(SHOW);
+    props.bookInterview(props.id, interview, transition);
+    //transition(SHOW);
   }
 
   function deleteInt(id) { 
     transition(DELETING);
-    props.cancelInterview(props.id);
-    transition(SHOW);
+    props.cancelInterview(props.id, transition);
+    //transition(SHOW);
   }
 
-  const { mode, transition, back } = useVisualMode(
-    props.interview ? SHOW : EMPTY
-  );
   return (
     <article className="appointment">
       <Fragment>
@@ -74,8 +77,9 @@ export default function Appointment(props) {
         onCancel={() => back()}
         onSave={save}
       />
-
       )}
+      { mode === SAVING && <Status message={"Saving"} />}
+      { mode === DELETING && <Status message={"Deleting"} />}
       </Fragment>
     </article>
   );

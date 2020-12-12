@@ -9,56 +9,14 @@ import useVisualMode from "../hooks/useVisualMode"
 import "components/Application.scss";
 
 export default function Application(props) {
-  function bookInterview(id, interview) {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    console.log("id, interview", id, interview);
-    setState({...state, appointments }); // probably need to move this until after completing the put request, which means the transition(SHOW) after this function call in index.js needs to wait for a promise to complete --> need mentor help on this - Saturday.
-      axios.put(`/api/appointments/${id}`, {interview: interview })
-      .then(function (response) {
-        console.log(response);
-        
-      })
-      .catch(function (error) {
-        console.log(error);
-        // return false;
-      });
-  }
-
-  function cancelInterview(id) {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    axios.delete(`/api/appointments/${id}`, { interview: null })
-    .then(function (response) {
-      console.log(response);
-      setState({...state, appointments }); // probably need to move this
-    })
-    .catch(function (error) {
-      console.log(error);
-      // return false;
-    });
-  }
-
   const [state, setState] = useState({
     day: "Monday",
     days: [],
     appointments: {},
     interviewers: {}
   });
-  const setDay = day => setState({ ...state, day });
-  // const setDays = days => setState( prev => ({ ...prev, days }));
+  //const setDay = day => setState({ ...state, day });
+  const setDay = day => setState( prev => ({ ...prev, day }));
 
   useEffect(() => {
     Promise.all([
@@ -91,7 +49,57 @@ export default function Application(props) {
       />
     );
   });
-    
+  
+    // Function called from save() when Creating or Editing an interview
+    function bookInterview(id, interview, transition) {
+      const appointment = {
+        ...state.appointments[id],
+        interview: { ...interview }
+      };
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment
+      };
+      // console.log("id, interview", id, interview);
+       // Tried to use useEffect here but can't Error: React Hook "useEffect" is called in function "bookInterview" which is neither a React function component or a custom React Hook function 
+      axios.put(`/api/appointments/${id}`, {interview: interview })
+      .then(function (response) {
+        console.log(response);
+        setState({...state, appointments }); 
+        transition("SHOW");
+      })
+      .catch(function (error) {
+        console.log(error);
+        // return false;
+      });
+    }
+  
+  // function called from deleteInt() when deleting an interview
+  function cancelInterview(id, transition) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+   // Tried to put useEffect here but can't Error: React Hook "useEffect" is called in function "cancelInterview" which is neither a React function component or a custom React Hook function 
+    axios.delete(`/api/appointments/${id}`, { interview: null })
+    .then(function (response) {
+      console.log(response);
+      setState({...state, appointments });
+      transition("EMPTY");
+    })
+    .catch(function (error) {
+      console.log(error);
+      // return false;
+    });
+
+  }
+
+
+
   return (
     <main className="layout">
       <section className="sidebar">
