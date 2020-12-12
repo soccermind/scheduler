@@ -6,14 +6,16 @@ import InterviewerList from "../InterviewerList";
 
 export default function Form(props) {
   const [name, setName] = useState(props.name || "");
-  const [interviewer, setInterviewer] = useState(props.interviewer || null);
-
+  // const [interviewer, setInterviewer] = useState(props.interviewer || null);
+  const [id, setId] = useState(props.interviewer ? props.interviewer.id : null);
+  // console.log("**Interviewer=", interviewer)
   const onSave = event => {
-    props.onSave(name, interviewer);
+  //  debugger
+    props.onSave(name, id); // interviewers
   };
   const reset = () => {
     setName("");
-    setInterviewer(null);
+    setId(null);
   };
   const cancel = () => {
     reset();
@@ -38,8 +40,8 @@ export default function Form(props) {
         </form>
         <InterviewerList 
           interviewers={props.interviewers} 
-          interviewer={interviewer} 
-          setInterviewer={setInterviewer} 
+          id={id}
+          setInterviewer={setId} 
         />
       </section>
       <section className="appointment__card-right">

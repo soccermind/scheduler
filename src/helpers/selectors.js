@@ -16,20 +16,25 @@ function getAppointmentsForDay(state, day) {
   return appointmentArr;
 };
 
-function getInterview(state, interview) {
-  if (!interview) {
-    return null;
-  }
-  let interviewObj = { "student": "", "interviewer": { "id": null, "name": "", "avatar": null  }};
-  interviewObj.student = interview.student;
-  // interviewObj["interviewer"] = {};
-  interviewObj["interviewer"]["id"] = interview.interviewer;
-  // console.log("*******state.interviewers=", state.interviewers)
-  // console.log("*******interview.interviewer", interview.interviewer)
-  interviewObj["interviewer"]["name"] = state.interviewers[interview.interviewer]["name"];
-  interviewObj["interviewer"]["avatar"] = state.interviewers[interview.interviewer]["avatar"];
-  // console.log("***interviweObj=", interviewObj)
-  return interviewObj;
+  function getInterview(state, interview) {
+    if (!interview) {
+      return null;
+    }
+    let interviewObj = { "student": "", "interviewer": { "id": null, "name": "", "avatar": null  }};
+    interviewObj.student = interview.student;
+    // interviewObj["interviewer"] = {};
+    // if (!interview.interviewer) {
+    //   return interviewObj;
+    // }
+    interviewObj["interviewer"]["id"] = interview.interviewer;
+    // console.log("*******state.interviewers=", state.interviewers)
+    // console.log("*******interview.interviewer", interview.interviewer)
+    // debugger 
+    interviewObj["interviewer"]["name"] = state.interviewers[interview.interviewer]["name"];
+    
+    interviewObj["interviewer"]["avatar"] = state.interviewers[interview.interviewer]["avatar"];
+    // console.log("***interviweObj=", interviewObj)
+    return interviewObj;
   }; 
 
   function getInterviewersForDay(state, day) {

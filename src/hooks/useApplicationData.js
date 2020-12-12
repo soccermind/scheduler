@@ -21,7 +21,24 @@ export default function useApplicationData(initial) {
     }, []);
 
   // Function called from save() when Creating or Editing an interview
-  function bookInterview(id, interview, transition, _mode, _errorMode) {
+  function bookInterview(id, interview, transition, _mode, _errorMode, originMode) {
+    const days = [...state.days];
+    if (originMode === 'CREATE') {
+      const dayIndex = state.days.findIndex( _day => _day.name === state.day);
+      console.log("dayIndex=", dayIndex);
+      const newSpots = state.days[dayIndex].spots - 1;
+      // const currentSpots = state.days.find( _day => _day.name === state.day).spots;
+      // console.log("currentSpots=", currentSpots)
+      console.log("state.days[dayIndex].spots", state.days[dayIndex].spots)
+      console.log("newSpots=", newSpots)
+      const selectedDay = {
+        ...state.days[dayIndex], spots: newSpots
+      }
+      console.log("selectedDay=", selectedDay)
+      // const days = [...state.days];
+      days[dayIndex] = selectedDay;
+    }
+
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -35,7 +52,9 @@ export default function useApplicationData(initial) {
     axios.put(`/api/appointments/${id}`, {interview: interview })
     .then(function (response) {
       console.log(response);
-      setState({...state, appointments }); 
+      // setState({...state, appointments });
+      setState(prev => ({...prev, appointments, days }));
+      
       transition(_mode);
     })
     .catch(function (error) {
@@ -47,6 +66,20 @@ export default function useApplicationData(initial) {
 
   // function called from deleteInt() when deleting an interview
   function cancelInterview(id, transition, _mode, _errorMode) {
+    const dayIndex = state.days.findIndex( _day => _day.name === state.day);
+    console.log("dayIndex=", dayIndex);
+    const newSpots = state.days[dayIndex].spots + 1;
+    // const currentSpots = state.days.find( _day => _day.name === state.day).spots;
+    // console.log("currentSpots=", currentSpots)
+    console.log("state.days[dayIndex].spots", state.days[dayIndex].spots)
+    console.log("newSpots=", newSpots)
+    const selectedDay = {
+      ...state.days[dayIndex], spots: newSpots
+    }
+    console.log("selectedDay=", selectedDay)
+    const days = [...state.days];
+    days[dayIndex] = selectedDay;
+
     const appointment = {
       ...state.appointments[id],
       interview: null
@@ -55,11 +88,13 @@ export default function useApplicationData(initial) {
       ...state.appointments,
       [id]: appointment
     };
+    
   // Tried to put useEffect here but can't Error: React Hook "useEffect" is called in function "cancelInterview" which is neither a React function component or a custom React Hook function 
     axios.delete(`/api/appointments/${id}`, { interview: null })
     .then(function (response) {
       console.log(response);
-      setState({...state, appointments });
+      // setState({...state, appointments });
+      setState(prev => ({...prev, appointments, days }));
       transition(_mode);
     })
     .catch(function (error) {
