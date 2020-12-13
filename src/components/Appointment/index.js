@@ -21,6 +21,7 @@ const CONFIRM = "CONFIRM";
 const EDIT = "EDIT";
 const ERROR_SAVE = "ERROR_SAVE";
 const ERROR_DELETE = "ERROR_DELETE";
+const ERROR_MISSING = "ERROR_MISSING";
 
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
@@ -28,20 +29,24 @@ export default function Appointment(props) {
   );
 
   function save(name, interviewer) {
-    const interview = {
-      student: name,
-      interviewer
-    };
-    console.log("OriginMode=", mode);
-    const originMode = mode;
-    transition(SAVING);
-    // debugger
-    props.bookInterview(props.id, interview, transition, SHOW, ERROR_SAVE, originMode);
-    // props
-    // .bookInterview(props.id, interview)
-    // .then(() => transition(SHOW))
-    // .catch(error => transition(ERROR_SAVE, true));
-  }
+    if (!name || !interviewer) {
+      transition(ERROR_MISSING);
+    } else {
+      const interview = {
+        student: name,
+        interviewer
+      };
+      console.log("OriginMode=", mode);
+      const originMode = mode;
+      transition(SAVING);
+      // debugger
+      props.bookInterview(props.id, interview, transition, SHOW, ERROR_SAVE, originMode);
+      // props
+      // .bookInterview(props.id, interview)
+      // .then(() => transition(SHOW))
+      // .catch(error => transition(ERROR_SAVE, true));
+    }
+  } 
 
   function deleteInt(id) { 
     transition(DELETING, true);
@@ -98,6 +103,12 @@ export default function Appointment(props) {
       { mode === ERROR_DELETE && (
         <Error 
           message={"Could not delete the appointment"}
+          onClose={() => back()} 
+        />
+      )}
+      { mode === ERROR_MISSING && (
+        <Error 
+          message={"Must both enter a student name and select an interviewer."}
           onClose={() => back()} 
         />
       )}
