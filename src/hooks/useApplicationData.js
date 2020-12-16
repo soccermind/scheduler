@@ -13,9 +13,12 @@ export default function useApplicationData(initial) {
 
   useEffect(() => {
     Promise.all([
-      axios.get("http://localhost:8001/api/days"),
-      axios.get("http://localhost:8001/api/appointments"),
-      axios.get("http://localhost:8001/api/interviewers")
+      // axios.get("http://localhost:8001/api/days"),
+      // axios.get("http://localhost:8001/api/appointments"),
+      // axios.get("http://localhost:8001/api/interviewers")
+      axios.get("/api/days"),
+      axios.get("/api/appointments"),
+      axios.get("/api/interviewers")
     ]).then((all) => {
         setState(prev => ({...prev, days: all[0].data, appointments: all[1].data, interviewers: all[2].data }));
       });
@@ -26,16 +29,16 @@ export default function useApplicationData(initial) {
     const days = [...state.days];
     if (originMode === 'CREATE') {
       const dayIndex = state.days.findIndex( _day => _day.name === state.day);
-      console.log("dayIndex=", dayIndex);
+      // console.log("dayIndex=", dayIndex);
       const newSpots = state.days[dayIndex].spots - 1;
       // const currentSpots = state.days.find( _day => _day.name === state.day).spots;
       // console.log("currentSpots=", currentSpots)
-      console.log("state.days[dayIndex].spots", state.days[dayIndex].spots)
-      console.log("newSpots=", newSpots)
+      // console.log("state.days[dayIndex].spots", state.days[dayIndex].spots)
+      // console.log("newSpots=", newSpots)
       const selectedDay = {
         ...state.days[dayIndex], spots: newSpots
       }
-      console.log("selectedDay=", selectedDay)
+      // console.log("selectedDay=", selectedDay)
       // const days = [...state.days];
       days[dayIndex] = selectedDay;
     }
@@ -52,14 +55,14 @@ export default function useApplicationData(initial) {
       // Tried to use useEffect here but can't Error: React Hook "useEffect" is called in function "bookInterview" which is neither a React function component or a custom React Hook function 
     axios.put(`/api/appointments/${id}`, {interview: interview })
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
       // setState({...state, appointments });
       setState(prev => ({...prev, appointments, days }));
       
       transition(_mode);
     })
     .catch(function (error) {
-      console.log(error);
+      // console.log(error);
       transition(_errorMode, true);
       // return false;
     });
@@ -68,16 +71,16 @@ export default function useApplicationData(initial) {
   // function called from deleteInt() when deleting an interview
   function cancelInterview(id, transition, _mode, _errorMode) {
     const dayIndex = state.days.findIndex( _day => _day.name === state.day);
-    console.log("dayIndex=", dayIndex);
+    // console.log("dayIndex=", dayIndex);
     const newSpots = state.days[dayIndex].spots + 1;
     // const currentSpots = state.days.find( _day => _day.name === state.day).spots;
     // console.log("currentSpots=", currentSpots)
-    console.log("state.days[dayIndex].spots", state.days[dayIndex].spots)
-    console.log("newSpots=", newSpots)
+    // console.log("state.days[dayIndex].spots", state.days[dayIndex].spots)
+    // console.log("newSpots=", newSpots)
     const selectedDay = {
       ...state.days[dayIndex], spots: newSpots
     }
-    console.log("selectedDay=", selectedDay)
+    // console.log("selectedDay=", selectedDay)
     const days = [...state.days];
     days[dayIndex] = selectedDay;
 
@@ -93,13 +96,13 @@ export default function useApplicationData(initial) {
   // Tried to put useEffect here but can't Error: React Hook "useEffect" is called in function "cancelInterview" which is neither a React function component or a custom React Hook function 
     axios.delete(`/api/appointments/${id}`, { interview: null })
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
       // setState({...state, appointments });
       setState(prev => ({...prev, appointments, days }));
       transition(_mode);
     })
     .catch(function (error) {
-      console.log(error);
+      // console.log(error);
       transition(_errorMode, true);
       // return false;
     });
