@@ -1,4 +1,10 @@
-# Interview Scheduler
+# Interview Scheduler Project
+
+Interview Scheduler is a React application that allows users to book and cancel interviews in a user-friendly interface.  It uses a concise API and was tested using component testing in Storybook, integration testing in JEST and End-to-End testing in Cypress. 
+
+## Final Product
+
+
 
 ## Setup
 
@@ -21,3 +27,9 @@ npm test
 ```sh
 npm run storybook
 ```
+
+## Dependencies
+
+- axios
+- @testing-library/react-hooks
+- react-test-renderer
