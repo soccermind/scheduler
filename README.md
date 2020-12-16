@@ -4,7 +4,11 @@ Interview Scheduler is a React application that allows users to book and cancel 
 
 ## Final Product
 
-
+!["Home display"](https://github.com/soccermind/scheduler/blob/master/docs/Initial_display.png)
+!["Book an appointment"](https://github.com/soccermind/scheduler/blob/master/docs/Book_an_appointment_filled.png)
+!["Booked appointment options"](https://github.com/soccermind/scheduler/blob/master/docs/Appointment_options.png)
+!["Edit an appointment"](https://github.com/soccermind/scheduler/blob/master/docs/Edit_an_appointment.png)
+!["Delete an appointment"](https://github.com/soccermind/scheduler/blob/master/docs/Delete_confirmation.png)
 
 ## Setup
 
